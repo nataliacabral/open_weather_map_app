@@ -27,12 +27,14 @@ import java.util.ArrayList;
 
 /**
  * Created by nataliacabral on 10/30/16.
+ * Service to check if the weather forecast for any of the selected cities has changed.
  */
 
 public class CheckCityWeatherService extends Service {
     public Handler handler = null;
     public static Runnable runnable = null;
     private static int INTERVAL = 2000;
+    private static int NOTIFICATION_ID = 001;
 
 
     @Nullable
@@ -45,6 +47,8 @@ public class CheckCityWeatherService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Run in another thread so it does not affect the UI thread
         HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
         mHandlerThread.start();
         handler = new Handler(mHandlerThread.getLooper());
@@ -69,6 +73,7 @@ public class CheckCityWeatherService extends Service {
 
             try {
                 String json = HttpRequestor.process(url);
+                //Get the more updated information about the city and check if it changed
                 City updatedCity = CityFactory.getCity(new JSONObject(json));
 
                 if (city.weatherChanged(updatedCity)) {
@@ -85,6 +90,12 @@ public class CheckCityWeatherService extends Service {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+    }
+
     private void sendNotification(City city){
         Log.i("SERVICE", "Send notification: " + city.getName() );
 
@@ -97,13 +108,13 @@ public class CheckCityWeatherService extends Service {
         Intent resultIntent = new Intent(this, CityDetailsActivity.class);
         resultIntent.putExtra(CityDetailsActivity.EXTRA_CITY, city);
 
+        // Open the details activity when the notification is selected
         PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mBuilder.setContentIntent(resultPendingIntent);
-        int mNotificationId = 001;
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
 
     }
 }

@@ -13,6 +13,9 @@ import com.nataliacabral.openweathermapapp.respositories.CitiesRepository;
 
 /**
  * Created by nataliacabral on 10/28/16.
+ * Activity to present the details of the City.
+ * The details include the max temperature, min temperature and description of the weather forecast
+ * Also, the user is able select to track the changes in the forecast of the city.
  */
 
 public class CityDetailsActivity extends AppCompatActivity {

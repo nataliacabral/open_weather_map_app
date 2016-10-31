@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 /**
  * AsyncTask to download image from a URL and present in a imageView.
- * It is needed to avoid downloading in the UI thread.
+ * It is needed to avoid downloading it in the UI thread.
  * Created by nataliacabral on 10/29/16.
  */
 

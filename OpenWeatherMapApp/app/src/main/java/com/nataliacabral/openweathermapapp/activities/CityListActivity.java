@@ -16,6 +16,10 @@ import java.util.ArrayList;
 
 /**
  * Created by nataliacabral on 10/27/16.
+ * Activity to present the list of cities returned by the open weather API.
+ * For each city, the list presents an icon that represents the weather
+ * so the user can easily have a preview ot the weather forecast.
+ * The user can select one activity to view the details.
  */
 
 public class CityListActivity extends AppCompatActivity {

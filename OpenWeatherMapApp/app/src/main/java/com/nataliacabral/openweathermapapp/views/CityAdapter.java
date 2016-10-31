@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by nataliacabral on 10/29/16.
+ * Adapter to present the items of the cities list view.
  */
 
 public class CityAdapter extends ArrayAdapter<City>  {

@@ -63,10 +63,12 @@ public class City implements Serializable {
         return id == ((City)obj).getId();
     }
 
+    // Validated if the max or min temperature has changed if compared with the updated city
     public boolean weatherChanged(City updatedCity) {
         return !(this.maxTemperature == updatedCity.getMaxTemperature() && this.minTemperature == updatedCity.getMinTemperature());
     }
 
+    // Update the values of the max or min temperature
     public void updateWeather(City updatedCity) {
         this.maxTemperature = updatedCity.getMaxTemperature();
         this.minTemperature = updatedCity.getMinTemperature();

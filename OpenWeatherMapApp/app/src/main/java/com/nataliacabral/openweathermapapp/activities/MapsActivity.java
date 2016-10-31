@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,6 +24,7 @@ import com.nataliacabral.openweathermapapp.respositories.CitiesRepository;
 import com.nataliacabral.openweathermapapp.services.CheckCityWeatherService;
 import com.nataliacabral.openweathermapapp.tasks.OnTaskCompleted;
 import com.nataliacabral.openweathermapapp.tasks.RESTClientTask;
+import com.nataliacabral.openweathermapapp.utils.DialogUtils;
 import com.nataliacabral.openweathermapapp.utils.OpenWeatherAPIUtils;
 
 import org.json.JSONArray;
@@ -30,6 +32,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+/**
+ * Created by nataliacabral on 10/30/16.
+ * Launcher acitity taht presents the map to the user.
+ * The user can long click in any point to add a marker and search for cities close to that point.
+ */
+
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapLongClickListener, OnTaskCompleted {
     private Button searchButton;
@@ -40,6 +49,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapLon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        // Present instructions
+        Toast.makeText(this, getString(R.string.instructions), Toast.LENGTH_SHORT).show();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -50,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapLon
         });
 
         searchButton = (Button) findViewById(R.id.btSearch);
-        searchButton.setEnabled(false);
+        searchButton.setEnabled(false); // button is only enabled when one marker is added
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +74,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapLon
             }
         });
 
+        // Start service to track for changes in selected cities
         startService(new Intent(MapsActivity.this, CheckCityWeatherService.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(MapsActivity.this, CheckCityWeatherService.class));
     }
 
     @Override
@@ -83,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapLon
             JSONArray jsonList = new JSONObject(json).optJSONArray("list");
 
             if (jsonList.length() == 0) {
-                presentError(getString(R.string.no_cities_returned));
+                DialogUtils.presentError(this, getString(R.string.no_cities_returned));
 
             } else {
                 for (int i = 0; i < jsonList.length(); i++) {
@@ -98,20 +117,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapLon
 
         } catch (JSONException e) {
             e.printStackTrace();
-            presentError(getString(R.string.json_parser_failed));
+            DialogUtils.presentError(this, getString(R.string.json_parser_failed));
         }
     }
-    private void presentError(String errorMessage) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.error));
-        alertDialog.setMessage(errorMessage);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
-    }
+
 }
 

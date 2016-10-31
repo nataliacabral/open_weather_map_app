@@ -5,9 +5,11 @@
     <string name="city_details_activity_label">City Details</string>
     <string name="error">Error</string>
     <string name="json_parser_failed">Failed to parse data.</string>
-    <string name="request_failed">Error to load list of cities. Check your Internet Connection</string>
+    <string name="request_failed">Error to load data. Check your Internet Connection</string>
     <string name="ok">Ok</string>
     <string name="no_cities_returned">No cities were found. Please pick another point</string>
     <string name="weather_changed">Weather forecast changed</string>
+    <string name="instructions">Long click in any point to pick a point in the map</string>
+    <string name="loading_data">Loading data ...</string>
 
 </resources>

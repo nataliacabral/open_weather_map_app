@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 
 import com.nataliacabral.openweathermapapp.R;
+import com.nataliacabral.openweathermapapp.utils.DialogUtils;
 import com.nataliacabral.openweathermapapp.utils.HttpRequestor;
 
 import java.io.BufferedReader;
@@ -20,6 +21,8 @@ import java.net.URL;
 
 /**
  * Created by nataliacabral on 10/26/16.
+ * Task to perform a GET in a endpoint and return it JSON.
+ * It is generic to make it reusable.
  */
 
 public class RESTClientTask extends AsyncTask<String, Object, String> {
@@ -45,7 +48,7 @@ public class RESTClientTask extends AsyncTask<String, Object, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         processDialog = new ProgressDialog((Context) activity);
-        processDialog.setMessage("Loading cities ...");
+        processDialog.setMessage(activity.getString(R.string.loading_data));
         processDialog.show();
     }
 
@@ -57,20 +60,7 @@ public class RESTClientTask extends AsyncTask<String, Object, String> {
                 ((OnTaskCompleted) activity).onTaskCompleted(result);
             }
         } else {
-            presentError();
+            DialogUtils.presentError(activity, activity.getString(R.string.request_failed));
         }
-    }
-
-    private void presentError(){
-        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-        alertDialog.setTitle(activity.getString(R.string.error));
-        alertDialog.setMessage(activity.getString(R.string.request_failed));
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, activity.getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
     }
 }

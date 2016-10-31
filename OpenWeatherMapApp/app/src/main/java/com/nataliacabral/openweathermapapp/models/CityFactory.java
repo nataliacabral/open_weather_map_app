@@ -23,6 +23,7 @@ public class CityFactory {
         String description = weatherObject.optString(OpenWeatherAPIUtils.JSON_TEMP_DESCRIPTION_KEY).toString();
         String icon = weatherObject.optString(OpenWeatherAPIUtils.JSON_TEMP_ICON_KEY).toString();
 
-        return new City(id, name, description, temp_max, temp_min, icon);
+        City city = new City(id, name, description, temp_max, temp_min, icon);
+        return city;
     }
 }
